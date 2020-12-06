@@ -1,6 +1,5 @@
 module Main where
 
-
 isValidPassword :: (Int, Int, Char, String) -> Bool
 isValidPassword (lower, 0, c, (x:xs)) | x == c = False -- To many of 'c'
 isValidPassword (lower, _, _, []) = lower <= 0 -- Check if enough characters were there

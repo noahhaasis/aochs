@@ -1,6 +1,5 @@
 module Advent (split, count) where
 
-
 split :: Eq a => [a] -> a -> [[a]]
 split s c =
   case splitOne s c of
