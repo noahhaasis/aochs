@@ -8,15 +8,34 @@ import Advent
 
 type Passport = Map String String
 
-requiredFields :: [String]
-requiredFields = [ "byr", "iyr", "eyr", "hgt", "hcl", "ecl" , "pid" ]
+main :: IO ()
+main = getPassports "input4" >>= (putStrLn . show . part2)
+  where part1 = count hasRequiredFields
+        part2 = count isValid
 
 hasRequiredFields :: Passport -> Bool
 hasRequiredFields p = all (`Map.member` p) requiredFields
 
+requiredFields :: [String]
+requiredFields = [ "byr", "iyr", "eyr", "hgt", "hcl", "ecl" , "pid" ]
+
 isValid :: Passport -> Bool
 isValid p = hasRequiredFields p && validFieldValues p
   where validFieldValues = all isValidField . Map.toList
+
+isValidField :: (String, String) -> Bool
+isValidField ("byr", v) = fourDigits v && inRange 1920 2002 v
+isValidField ("iyr", v) = fourDigits v && inRange 2010 2020 v
+isValidField ("eyr", v) = fourDigits v && inRange 2020 2030 v
+isValidField ("hgt", v) = length v > 2 &&
+  case splitAt (length v - 2) v of
+    (height, "cm") -> inRange 150 193 height
+    (height, "in") -> inRange 59 76 height
+    _ -> False
+isValidField ("hcl", v) = length v == 7 && isHex v
+isValidField ("ecl", v) = v `elem` colors
+isValidField ("pid", v) = length v == 9 && isNumber v
+isValidField _ = True
 
 inRange :: Int -> Int -> String -> Bool
 inRange lower upper v =
@@ -42,20 +61,8 @@ isHex ('#' : digits) = all isHexDigit digits
       ]
 isHex _ = False
 
-
-isValidField :: (String, String) -> Bool
-isValidField ("byr", v) = fourDigits v && inRange 1920 2002 v
-isValidField ("iyr", v) = fourDigits v && inRange 2010 2020 v
-isValidField ("eyr", v) = fourDigits v && inRange 2020 2030 v
-isValidField ("hgt", v) = length v > 2 &&
-  case splitAt (length v - 2) v of
-    (height, "cm") -> inRange 150 193 height
-    (height, "in") -> inRange 59 76 height
-    _ -> False
-isValidField ("hcl", v) = length v == 7 && isHex v
-isValidField ("ecl", v) = v `elem` colors
-isValidField ("pid", v) = length v == 9 && isNumber v
-isValidField _ = True
+getPassports :: FilePath -> IO [Passport]
+getPassports = fmap (map (parse . unlines) . flip split [] . lines) . readFile
 
 parse :: String -> Passport
 parse = Map.fromList . (map parseKeyValue) . words
@@ -64,12 +71,3 @@ parse = Map.fromList . (map parseKeyValue) . words
       case split s ':' of
         [k, v] -> (k, v)
         _ -> error ("Parse error. Failed to parse '" ++ s ++ "'")
-
-
-getPassports :: FilePath -> IO [Passport]
-getPassports = fmap (map (parse . unlines) . flip split [] . lines) . readFile
-
-main :: IO ()
-main = getPassports "input4" >>= (putStrLn . show. part2)
-  where part1 = count hasRequiredFields
-        part2 = count isValid

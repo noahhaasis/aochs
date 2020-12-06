@@ -11,14 +11,9 @@ isValidPassword (lower, upper, c, (x:xs)) =
 
 newPolicy :: (Int, Int, Char, String) -> Bool
 newPolicy (pos1, pos2, c, s) =
-  (p1 < length s && s !! p1 == c) `xor` (p2 < length s && s !! p2 == c)
+  (p1 < length s && s !! p1 == c) /= (p2 < length s && s !! p2 == c)
     where p1 = pos1 - 1
           p2 = pos2 - 1
-
-xor :: Bool -> Bool -> Bool
-xor True False = True
-xor False True = True
-xor _ _ = False
 
 getInput :: FilePath -> IO [(Int, Int, Char, String)]
 getInput = fmap (map parseLine . lines) . readFile

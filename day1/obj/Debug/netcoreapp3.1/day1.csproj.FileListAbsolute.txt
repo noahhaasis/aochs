@@ -1,0 +1,11 @@
+/home/lambda/Projects/personal/advent/20/day1/bin/Debug/netcoreapp3.1/day1
+/home/lambda/Projects/personal/advent/20/day1/bin/Debug/netcoreapp3.1/day1.deps.json
+/home/lambda/Projects/personal/advent/20/day1/bin/Debug/netcoreapp3.1/day1.runtimeconfig.json
+/home/lambda/Projects/personal/advent/20/day1/bin/Debug/netcoreapp3.1/day1.runtimeconfig.dev.json
+/home/lambda/Projects/personal/advent/20/day1/bin/Debug/netcoreapp3.1/day1.dll
+/home/lambda/Projects/personal/advent/20/day1/bin/Debug/netcoreapp3.1/day1.pdb
+/home/lambda/Projects/personal/advent/20/day1/obj/Debug/netcoreapp3.1/day1.csprojAssemblyReference.cache
+/home/lambda/Projects/personal/advent/20/day1/obj/Debug/netcoreapp3.1/day1.AssemblyInfoInputs.cache
+/home/lambda/Projects/personal/advent/20/day1/obj/Debug/netcoreapp3.1/day1.AssemblyInfo.cs
+/home/lambda/Projects/personal/advent/20/day1/obj/Debug/netcoreapp3.1/day1.dll
+/home/lambda/Projects/personal/advent/20/day1/obj/Debug/netcoreapp3.1/day1.pdb
