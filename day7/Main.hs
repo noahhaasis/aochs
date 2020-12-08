@@ -2,6 +2,7 @@
 module Main where
 
 import Control.Monad.State (State, get, modify, when, execState)
+import Data.List (find)
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Data.Text (Text)
@@ -90,13 +91,20 @@ traverseRules addSelf b rules = do
       when addSelf (modify (Set.insert b))
       mapM_ (\n -> traverseRules True n rules) nextNodes
 
+countBagsInside :: Bag -> [Rule] -> Int
+countBagsInside b r =
+  case find (\(Rule outer _) -> outer == b) r of
+    Just (Rule _ innerBags) -> sum $ map countBag innerBags
+      where countBag (n, b) = n * (1 + countBagsInside b r)
+    Nothing -> 0
+
 depthOneBagsContaining :: Bag -> [Rule] -> Set Bag
 depthOneBagsContaining b rules = Set.fromList
   [outer | Rule outer inner <- rules, any ((==) b . snd) inner]
 
-part1 :: [Rule] -> Int
-part1 rules = Set.size $ bagsPossibleContaining myBag rules
-  where myBag = Bag (Modifier "shiny") (Color "gold")
-
 main :: IO ()
-main = parseInput "input7" >>= (print . fmap part1)
+main = parseInput "input7" >>= (print . fmap part2)
+  where
+    part2 = countBagsInside myBag
+    part1 rules = Set.size $ bagsPossibleContaining myBag rules
+    myBag = Bag (Modifier "shiny") (Color "gold")
