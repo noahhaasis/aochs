@@ -36,23 +36,17 @@ incrPc :: State ExecutionContext ()
 incrPc = modify
   (\(ExecutionContext p pc v acc) -> ExecutionContext p (pc+1) v acc)
 
-
 executeInstruction :: State ExecutionContext ()
 executeInstruction = do
   ins <- fetch
   case ins of
     Nop _ -> incrPc
-    Acc i -> do accIns i; incrPc
+    Acc i -> accIns i >> incrPc
     Jmp p -> jmpIns p
 
 storePc :: Int -> State ExecutionContext ()
 storePc n = modify
   (\(ExecutionContext p pc v acc) -> ExecutionContext p pc (Set.insert n v) acc)
-
-terminate :: State ExecutionContext Bool
-terminate = do
-  s <- get
-  return (pc s == length (program s))
 
 -- Returns true if the program terminates normally and false
 -- if it terminates by attempting to execute a line twice.
@@ -68,12 +62,10 @@ execute = do
       t <- terminate
       if t then return True
            else execute
+  where terminate = (\s -> pc s == length (program s)) <$> get
 
 part1 :: Program -> Int
 part1 p = acc $ execState execute (initialExecutionContext p)
-
-terminates :: Program -> Bool
-terminates p = evalState execute (initialExecutionContext p)
 
 programPermutations :: Program -> [Program]
 programPermutations p = map (swapAtPos p) jmpOrNopPositions
