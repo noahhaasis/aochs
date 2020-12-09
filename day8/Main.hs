@@ -113,4 +113,3 @@ getProgram = fmap parseProgram . readFile
 
 main :: IO ()
 main = getProgram "input8" >>= (print . part2)
-
