@@ -9,17 +9,12 @@ group :: Int -> [Int] -> [[Int]]
 group n xs | length xs < n = []
 group n xs = take n xs : group n (tail xs)
 
-possibleSums :: [Int] -> Set Int
-possibleSums xs = Set.fromList [x + y | x <- xs, y <- xs]
-
-getInput :: FilePath -> IO [Int]
-getInput = fmap (map read . words) . readFile
-
 part1 :: [Int] -> Maybe Int
 part1 l = fst <$> find (not . isValid) numPairs
   where
-    windowSize = 25
     numPairs = zip (drop windowSize l) (possibleSums <$> group windowSize l)
+    windowSize = 25
+    possibleSums xs = Set.fromList [x + y | x <- xs, y <- xs]
     isValid = uncurry Set.member
 
 findContigiousSet :: Int -> [Int] -> Maybe [Int]
@@ -38,3 +33,4 @@ part2 l = (\l -> maximum l + minimum l) <$> findContigiousSet solution1 l
 
 main :: IO ()
 main = getInput "input9" >>= (print . part2)
+  where getInput = fmap (map read . words) . readFile
