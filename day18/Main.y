@@ -12,18 +12,16 @@ import Data.Char
 
 
 Exp
-  : Exp '*' Factor { Mul $1 $3 }
-  : Exp '+' Factor { Add $1 $3 }
+  : Exp '*' Factor { $1 * $3 }
+  : Exp '+' Factor { $1 + $3 }
   | Factor { $1 }
 
 Factor
-  : int { Lit $1 }
+  : int { $1 }
   | '(' Exp ')' { $2 }
 
 
 -}
-
--- Grammer for part2
 
 %token
   int { TokenInt $$ }
@@ -34,16 +32,18 @@ Factor
 
 %%
 
+-- Grammar for part2
+
 Exp
-  : Exp '*' Exp1 { Mul $1 $3 }
+  : Exp '*' Exp1 { $1 * $3 }
   | Exp1 { $1 }
 
 Exp1
-  : Exp1 '+' Factor { Add $1 $3 }
+  : Exp1 '+' Factor { $1 + $3 }
   | Factor { $1 }
 
 Factor
-  : int { Lit $1 }
+  : int { $1 }
   | '(' Exp ')' { $2 }
 
 {
@@ -54,12 +54,6 @@ data Token
   | TokenMul
   | TokenOP
   | TokenCP
-  deriving (Eq, Show)
-
-data Exp
-  = Mul Exp Exp
-  | Add Exp Exp
-  | Lit Int
   deriving (Eq, Show)
 
 parseError :: [Token] -> a
@@ -76,18 +70,14 @@ lexer (n:xs) | isDigit n = lexNum (n:xs)
 lexer "" = []
 lexer s = error ("Failed to scan " ++ s)
 
-eval (Add a b) = eval a + eval b
-eval (Mul a b) = eval a * eval b
-eval (Lit n) = n
-
 lexNum cs = TokenInt (read num) : lexer rest
       where (num,rest) = span isDigit cs
 
-getInput :: FilePath -> IO [Exp]
+getInput :: FilePath -> IO [Int]
 getInput = fmap (map parse . lines) . readFile
   where parse = expr . lexer
 
 main :: IO ()
 main = getInput "input18" >>= (print . part1)
-  where part1 = sum . map eval
+  where part1 = sum
 }

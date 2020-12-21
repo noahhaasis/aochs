@@ -95,7 +95,7 @@ happyReduction_1 (HappyAbsSyn5  happy_var_3)
 	_
 	(HappyAbsSyn4  happy_var_1)
 	 =  HappyAbsSyn4
-		 (Mul happy_var_1 happy_var_3
+		 (happy_var_1 * happy_var_3
 	)
 happyReduction_1 _ _ _  = notHappyAtAll 
 
@@ -111,7 +111,7 @@ happyReduction_3 (HappyAbsSyn6  happy_var_3)
 	_
 	(HappyAbsSyn5  happy_var_1)
 	 =  HappyAbsSyn5
-		 (Add happy_var_1 happy_var_3
+		 (happy_var_1 + happy_var_3
 	)
 happyReduction_3 _ _ _  = notHappyAtAll 
 
@@ -125,7 +125,7 @@ happyReduction_4 _  = notHappyAtAll
 happyReduce_5 = happySpecReduce_1  6 happyReduction_5
 happyReduction_5 (HappyTerminal (TokenInt happy_var_1))
 	 =  HappyAbsSyn6
-		 (Lit happy_var_1
+		 (happy_var_1
 	)
 happyReduction_5 _  = notHappyAtAll 
 
@@ -192,12 +192,6 @@ data Token
   | TokenCP
   deriving (Eq, Show)
 
-data Exp
-  = Mul Exp Exp
-  | Add Exp Exp
-  | Lit Int
-  deriving (Eq, Show)
-
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
 
@@ -212,20 +206,16 @@ lexer (n:xs) | isDigit n = lexNum (n:xs)
 lexer "" = []
 lexer s = error ("Failed to scan " ++ s)
 
-eval (Add a b) = eval a + eval b
-eval (Mul a b) = eval a * eval b
-eval (Lit n) = n
-
 lexNum cs = TokenInt (read num) : lexer rest
       where (num,rest) = span isDigit cs
 
-getInput :: FilePath -> IO [Exp]
+getInput :: FilePath -> IO [Int]
 getInput = fmap (map parse . lines) . readFile
   where parse = expr . lexer
 
 main :: IO ()
 main = getInput "input18" >>= (print . part1)
-  where part1 = sum . map eval
+  where part1 = sum
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 -- $Id: GenericTemplate.hs,v 1.26 2005/01/14 14:47:22 simonmar Exp $
 
