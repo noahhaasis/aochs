@@ -8,6 +8,23 @@ import Data.Char
 %tokentype { Token }
 %error { parseError }
 
+{- Grammar for part1
+
+
+Exp
+  : Exp '*' Factor { Mul $1 $3 }
+  : Exp '+' Factor { Add $1 $3 }
+  | Factor { $1 }
+
+Factor
+  : int { Lit $1 }
+  | '(' Exp ')' { $2 }
+
+
+-}
+
+-- Grammer for part2
+
 %token
   int { TokenInt $$ }
   '+' { TokenAdd }
@@ -18,8 +35,11 @@ import Data.Char
 %%
 
 Exp
-  : Exp '*' Factor { Mul $1 $3 }
-  | Exp '+' Factor { Add $1 $3 }
+  : Exp '*' Exp1 { Mul $1 $3 }
+  | Exp1 { $1 }
+
+Exp1
+  : Exp1 '+' Factor { Add $1 $3 }
   | Factor { $1 }
 
 Factor
@@ -60,9 +80,6 @@ eval (Add a b) = eval a + eval b
 eval (Mul a b) = eval a * eval b
 eval (Lit n) = n
 
-
-part1 = sum . map eval
-
 lexNum cs = TokenInt (read num) : lexer rest
       where (num,rest) = span isDigit cs
 
@@ -72,5 +89,5 @@ getInput = fmap (map parse . lines) . readFile
 
 main :: IO ()
 main = getInput "input18" >>= (print . part1)
-
+  where part1 = sum . map eval
 }
