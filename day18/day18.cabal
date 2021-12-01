@@ -1,0 +1,14 @@
+cabal-version:       >=1.10
+
+name:                day18
+version:             0.1.0.0
+author:              Noah Haasis
+maintainer:          haasis_noah@yahoo.de
+build-type:          Simple
+
+executable day18
+  main-is:             Main.hs
+  build-depends:       
+      base >=4.14 && <4.15
+    , array
+  default-language:    Haskell2010
